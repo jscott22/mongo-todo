@@ -1,12 +1,12 @@
 /**
  * Created by jay on 5/7/17.
  */
-let express = require('express');
-let bodyParser = require('body-parser');
+let express = new require('express');
+let bodyParser = new require('body-parser');
 
-let {mongoose} = require('./db/mongoose');
-let {Todo} = require('./models/todo');
-let {User} = require('./models/user');
+let { mongoose } = new require('./db/mongoose');
+let { Todo } = new require('./models/todo');
+let { User } = new require('./models/user');
 
 let app = express();
 
@@ -21,7 +21,6 @@ app.post('/todos', (req, res) => {
     let todo = new Todo({
         text: req.body.text
     });
-
     todo.save().then((doc) => {
         res.send(doc);
     }, (e) => {
@@ -29,4 +28,12 @@ app.post('/todos', (req, res) => {
     });
 });
 
-module.exports = {app};
+app.get('/todos', (req, res) => {
+    Todo.find().then((todos) => {
+        res.send({ todos });
+    }, (e) => {
+        res.status(400).send(e)
+    });
+});
+
+module.exports = { app };

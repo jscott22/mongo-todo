@@ -131,3 +131,6 @@ Network Trash Folder
 Temporary Items
 .apdisk
 .idea/*
+.jshintrc
+.vscode/
+jsconfig.json
