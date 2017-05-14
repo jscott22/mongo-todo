@@ -18,6 +18,10 @@ app.listen(port, () => {
 
 app.use(bodyParser.json());
 
+app.get('/', (req, res) => {
+    res.status(200).send();
+});
+
 app.post('/todos', (req, res) => {
 
     let todo = new Todo({
