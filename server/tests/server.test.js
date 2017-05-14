@@ -1,17 +1,20 @@
 /**
  * Created by jay on 5/7/17.
  */
-const expect = new require('expect');
-const request = new require('supertest');
+const expect = require('expect');
+const request = require('supertest');
+const { ObjectID } = require('mongodb');
 
-const { app } = new require('./../server');
-const { Todo } = new require('./../models/todo');
+const { app } = require('./../server');
+const { Todo } = require('./../models/todo');
 
 const todos = [{
+    _id: new ObjectID(),
     text: 'First test todo'
 }, {
+    _id: new ObjectID(),
     text: 'Second test todo'
-}]
+}];
 
 beforeEach((done) => {
     Todo.remove({}).then(() => {
@@ -70,5 +73,33 @@ describe('POST /todos', () => {
                     .end(done);
             });
         });
-    })
+
+        describe('GET /todos/:id', () => {
+            it('should return todo doc', (done) => {
+                request(app)
+                    .get(`/todos/${todos[0]._id.toHexString()}`)
+                    .expect(200)
+                    .expect((res) => {
+                        expect(res.body.todo.text).toBe(todos[0].text);
+                    })
+                    .end(done);
+            });
+
+            it('should return 404 if todo not found', (done) => {
+                id = new ObjectID();
+                request(app)
+                    .get(`/todos/${id.toHexString()}`)
+                    .expect(404)
+                    .end(done);
+            });
+
+            it('should return 404 for non-object ids', (done) => {
+                id = 123;
+                request(app)
+                    .get(`/todos/${id}`)
+                    .expect(400)
+                    .end(done);
+            });
+        });
+    });
 });
